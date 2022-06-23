@@ -14,27 +14,45 @@
     let doCheckUser;
     let doMachine;
 
-    if (lang === "EN") {
+    if (lang === "ENG") {
       value = ["rock", "scissors", "paper"];
       report = {
+        one: "r",
+        two: "s",
+        three: "p",
         userReceipt: 'Choose an option: "rock", "scissors", "paper"',
         quit: "Are you sure you want to leave the game?",
-        exit: `You have ${result.player} points, the computer has ${result.computer} points`,
+        exit01: "You have",
+        exit02: " points, the computer has ",
+        exit03: "points",
         userError: `You entered incorrect data\nChoose an option: "rock", "scissors", "paper"`,
-        messageDraw: `A draw!\n You have ${result.player} points, the computer has ${result.computer} points\nYou made a wish for ${doCheckUser}\nThe computer counted ${doMachine}\nDo you want to continue the game?`,
-        messageRout: `You've lost :(\n You have ${result.player} points, the computer has ${result.computer} points\nYou made a wish for ${doCheckUser}\nThe computer counted ${doMachine}\nDo you want to continue the game?`,
-        messageVictory: `You won! :)\n You have ${result.player} points, the computer has ${result.computer} points\nYou made a wish for ${doCheckUser}\nThe computer counted ${doMachine}\nDo you want to continue the game?`,
+        messageDraw01: "A draw!\n You have ",
+        messageRout01: "You've lost :(\n You have ",
+        messageVictory01: "You won! :)\n You have ",
+        messageGeneral02: " points, the computer has ",
+        messageGeneral03: " points\nYou made a wish for ",
+        messageGeneral04: "\nThe computer counted ",
+        messageGeneral05: "\nDo you want to continue the game?",
       };
     } else {
       value = ["камень", "ножницы", "бумага"];
       report = {
+        one: "к",
+        two: "н",
+        three: "б",
         userReceipt: 'Выберите вариант:  "камень", "ножницы", "бумага"',
         quit: "Вы точно хотите покинуть игру?",
-        exit: `У Вас ${result.player} очков, у компьютера ${result.computer} очков`,
+        exit01: "У Вас ",
+        exit02: " очков, у компьютера ",
+        exit03: " очков",
         userError: 'Вы ввели неправильные данные\nВыберите вариант: "камень", "ножницы", "бумага"',
-        messageDraw: `Ничья!\nУ Вас ${result.player} очков, у компьютера ${result.computer} очков\nВы загадали ${doCheckUser}\nКомпьютер насчитал ${doMachine}\nЖелаете продолжить игру?`,
-        messageRout: `Вы проиграли! :(\nУ Вас ${result.player} очков, у компьютера ${result.computer} очков\nВы загадали ${doCheckUser}\nКомпьютер насчитал ${doMachine}\nЖелаете продолжить игру?`,
-        messageVictory: `Вы выиграли! :)\nУ Вас ${result.player} очков, у компьютера ${result.computer} очков\nВы загадали ${doCheckUser}\nКомпьютер насчитал ${doMachine}\nЖелаете продолжить игру?`,
+        messageDraw01: "Ничья!\nУ Вас ",
+        messageRout01: "Вы проиграли! :(\nУ Вас ",
+        messageVictory01: "Вы выиграли! :)\nУ Вас ",
+        messageGeneral02: " очков, у компьютера ",
+        messageGeneral03: " очков\nВы загадали ",
+        messageGeneral04: "\nКомпьютер насчитал ",
+        messageGeneral05: "\nЖелаете продолжить игру?",
       };
     }
 
@@ -42,42 +60,37 @@
       let userReceipt;
       let message;
 
-      userReceipt = prompt(report.userReceipt);
-      if (userReceipt === "null" || userReceipt === null) {
-        confirm(report.quit);
-        if (userReceipt === false) {
-          start();
-        } else {
-          alert(report.exit);
-          return;
+      const query = (userReceipt) => {
+        if (userReceipt === "null" || userReceipt === null) {
+          userReceipt = confirm(report.quit);
+          if (userReceipt === false) {
+            start();
+          } else {
+            let words = `${report.exit01} ${result.player} ${report.exit02} ${result.computer} ${report.exit03}`;
+            alert(words);
+          }
         }
-      }
+      };
+
+      userReceipt = prompt(report.userReceipt);
+      query(userReceipt);
+
       let user = userReceipt.trim().toLowerCase();
 
       doCheckUser = () => {
-        if (user[0] === "к" || user[0] === "r") {
+        if (user[0] === report.one) {
           userStep = value[0];
-          console.log(userStep);
           return userStep;
-        } else if (user[0] === "н" || user[0] === "s") {
+        } else if (user[0] === report.two) {
           userStep = value[1];
-          console.log(userStep);
           return userStep;
-        } else if (user[0] === "б" || user[0] === "p") {
+        } else if (user[0] === report.three) {
           userStep = value[2];
-          console.log(userStep);
           return userStep;
         } else {
           userReceipt = prompt(report.userError);
-          if (userReceipt === "null" || userReceipt === null) {
-            userReceipt = confirm(report.quit);
-            if (userReceipt === false) {
-              start();
-            } else {
-              alert(report.exit);
-              return;
-            }
-          }
+          query(userReceipt);
+
           user = userReceipt.trim().toLowerCase();
           doCheckUser();
         }
@@ -90,75 +103,61 @@
         const machine = Math.floor(Math.random() * (max - min + 1) + min);
         if (machine === 1) {
           machineStep = value[0];
-          console.log(machineStep);
           return machineStep;
         } else if (machine === 2) {
           machineStep = value[1];
-          console.log(machineStep);
           return machineStep;
         } else {
           machineStep = value[2];
-          console.log(machineStep);
           return machineStep;
         }
       };
       doMachine();
 
-      const doTotal = () => {
+      const request = (message) => {
+        if (message) {
+          return start();
+        } else {
+          let words = `${report.exit01} ${result.player} ${report.exit02} ${result.computer} ${report.exit03}`;
+          alert(words);
+          machineStep = 100;
+          userStep = 200;
+          return;
+        }
+      };
+
+      function doTotal() {
         if (machineStep === userStep) {
-          console.log(machineStep, userStep);
-          console.log(result);
           result.player += 1;
           result.computer += 1;
-          console.log(result);
-          message = confirm(report.messageDraw);
-          if (message === true) {
-            return start();
-          } else {
-            alert(report.exit);
-            return;
-          }
+          let words = `${report.messageDraw01} ${result.player} ${report.messageGeneral02} ${result.computer} ${report.messageGeneral03} ${userStep} ${report.messageGeneral04} ${machineStep} ${report.messageGeneral05}`;
+          message = confirm(words);
+          request(message);
         }
         if (
           (machineStep === value[0] && userStep === value[1]) ||
           (machineStep === value[2] && userStep === value[0]) ||
           (machineStep === value[1] && userStep === value[2])
         ) {
-          console.log(machineStep, userStep);
-          console.log(result);
           result.computer += 1;
-          console.log(result);
-          console.log(report);
-          message = confirm(report.messageRout);
-          if (message === true) {
-            return start();
-          } else {
-            alert(report.exit);
-            return;
-          }
+          let words = `${report.messageRout01} ${result.player} ${report.messageGeneral02} ${result.computer} ${report.messageGeneral03} ${userStep} ${report.messageGeneral04} ${machineStep} ${report.messageGeneral05}`;
+          message = confirm(words);
+          request(message);
         }
         if (
           (machineStep === value[1] && userStep === value[0]) ||
           (machineStep === value[0] && userStep === value[2]) ||
           (machineStep === value[2] && userStep === value[1])
         ) {
-          console.log(machineStep, userStep);
-          console.log(result);
           result.player += 1;
-          console.log(result);
-          console.log(report);
-          message = confirm(report.messageVictory);
-          if (message === true) {
-            return start();
-          } else {
-            alert(report.exit);
-            return;
-          }
+          let words = `${report.messageVictory01} ${result.player} ${report.messageGeneral02} ${result.computer} ${report.messageGeneral03} ${userStep} ${report.messageGeneral04} ${machineStep} ${report.messageGeneral05}`;
+          message = confirm(words);
+          request(message);
         }
-      };
+      }
       doTotal();
     };
   };
 
-  window.file = game();
+  window.file = game;
 })();
